@@ -1,4 +1,5 @@
 <project xmlns:sf="antlib:com.salesforce" basedir="." xmlns:git="antlib:com.rimerosolutions.ant.git" default="deploy">
+	<property file = "local.build.properties"/>
 	<property name="sf.server" value="https://login.salesforce.com"/>
     
 	<import file="${basedir}/lib/exec_anon.xml"/> 
@@ -40,9 +41,10 @@
 		<!-- <antcall target="generate.mocks"/> -->
 	
 		<!-- Deploy Apex Commons Sample -->
+		<echo message="Deploy to ${sf.username}"/>
 		<sf:deploy 
-	        username="sotos@hackathon.nvm" 
-	        password="nvmforce013yFlUDWR1XEDMKZ2FiJA01Kml"
+	        username="${sf.username}" 
+	        password="${sf.password}"
 	        serverurl="${sf.server}"
 	        deployRoot="${basedir}/src"/>
 	        

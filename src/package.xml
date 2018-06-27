@@ -4,6 +4,7 @@
     <description>ContactWorld Library</description>
     <types>
         <members>CWLib_Describe</members>
+        <members>CWLib_Utilities</members>
         <name>ApexClass</name>
     </types>
     <version>42.0</version>
