@@ -1,7 +1,126 @@
 public class CWLib_Describe {
-    private Schema.SObjectType sObjectType;
 
-    public CWLib_Describe(Schema.SObjectType sObjectType) {
-        this.sObjectType = sObjectType;
-    }   
+    private static Map<String, CWLib_Describe> cache {
+        get {
+            if(cache == null) {
+                return new Map<String, CWLib_Describe>();
+            }
+            return cache;
+        }
+        set;
+    }
+
+    private Schema.SobjectType token;
+    private Schema.DescribeSObjectResult describe {
+        get {
+            if(describe == null) {
+                describe = token.getDescribe();
+            }
+
+            return describe;
+        }
+        set;
+    }
+
+    public static CWLib_Describe describe(String token) {
+        CWLib_Describe instance = cache.get(token);
+
+        if(instance == null) {
+            instance = new CWLib_Describe(token);
+        }
+
+        return instance;
+    }
+
+    public CWLib_Describe(Schema.SobjectType sObjectType) {
+        register(sObjectType);
+    }
+
+    public CWLib_Describe(String sObjectType) {
+        if(!cache.containsKey(sObjectType)) {
+            register(sObjectType);
+        }
+    }
+
+    private void register(Schema.SObjectType sObjectType) {
+        String sObjectTypeString = String.valueOf(sObjectType);
+        if(!cache.containsKey(sObjectTypeString)) {
+            this.token = sObjectType;
+            cache.put(String.valueOf(sObjectType), this);
+        }
+    }
+
+    private void register(String sObjectType) {
+        if(!cache.containsKey(sObjectType)) {
+            this.describe = describeStringType(sObjectType);
+            this.token = describe.getSObjectType();
+            cache.put(sObjectType, this);
+        }
+    }
+
+    private Schema.DescribeSObjectResult describeStringType(String sObjectType) {
+        Schema.DescribeSObjectResult[] describeResults = Schema.DescribeSObjects(new String[] {sObjectType});
+        return describeResults[0];
+    }
+
+    public List<String> getFieldNames() {
+        return new List<String>(getFieldMap().keySet());
+    }
+
+    public Map<String, Schema.SobjectField> getFieldMap() {
+        return describe.fields.getMap();
+    }
+
+    public Map<String, Schema.DescribeFieldResult> getFieldsByName() {
+        return getFieldsByName(null);
+    }
+
+    public Map<String, Schema.DescribeFieldResult> getFieldsByName(IFieldFilter filter) {
+        Map<String, Schema.DescribeFieldResult> result = new Map<String, Schema.DescribeFieldResult>();
+        
+        for(Schema.SObjectField field : getFieldMap().values()) {
+            Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+            if(filter == null || filter.match(fieldDescribe)) {
+                result.put(fieldDescribe.getName(), fieldDescribe);
+            }
+        }
+
+        return result;
+    } 
+
+    public interface IFieldFilter {
+        Boolean match(Schema.DescribeFieldResult fieldDescribe);
+    }
+
+    public class PhoneFieldFilter implements IFieldFilter {
+        public Boolean match(Schema.DescribeFieldResult fieldDescribe) {
+            String fieldName = fieldDescribe.getName();
+
+            Boolean isFaxField = fieldName.toLowerCase().contains('fax');
+            Boolean isPhoneField = fieldDescribe.getType() == Schema.DisplayType.Phone || fieldName.toLowerCase().contains('phone');
+
+            return isPhoneField && !isFaxField;
+        }
+    }
+
+    public class IsReferenceToTypeFilter implements IFieldFilter {
+        String token;
+        public IsReferenceToTypeFilter(String token) {
+            this.token = token;
+        }
+
+        public Boolean match(Schema.DescribeFieldResult fieldDescribe) {
+            Boolean result = false;
+            if (fieldDescribe.getType() == Schema.DisplayType.Reference) {
+                for (Schema.sObjectType referenceType : fieldDescribe.getReferenceTo()) {
+                    if (String.valueOf(referenceType) == token) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+    }
 }

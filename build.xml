@@ -6,10 +6,10 @@
 	<import file="${basedir}/lib/undeploy.xml"/>
 
 	<!--  Downloaded from Salesforce Tools page under Setup -->
-	<typedef 
+	<!-- <typedef 
 		uri="antlib:com.salesforce" 
 		resource="com/salesforce/antlib.xml" 
-		classpath="${basedir}/lib/ant-salesforce.jar"/>
+		classpath="${basedir}/lib/ant-salesforce.jar"/> -->
 	
 	<!-- See https://github.com/rimerosolutions/ant-git-tasks -->
 	<!-- <taskdef uri="antlib:com.rimerosolutions.ant.git"
