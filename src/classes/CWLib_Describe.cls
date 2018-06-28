@@ -104,8 +104,8 @@ public class CWLib_Describe {
     }
 
     public class IsReferenceToTypeFilter implements IFieldFilter {
-        String token;
-        public IsReferenceToTypeFilter(String token) {
+        Schema.SobjectType token;
+        public IsReferenceToTypeFilter(Schema.SobjectType token) {
             this.token = token;
         }
 
@@ -113,7 +113,7 @@ public class CWLib_Describe {
             Boolean result = false;
             if (fieldDescribe.getType() == Schema.DisplayType.Reference) {
                 for (Schema.sObjectType referenceType : fieldDescribe.getReferenceTo()) {
-                    if (String.valueOf(referenceType) == token) {
+                    if (referenceType == token) {
                         result = true;
                         break;
                     }
