@@ -22,6 +22,10 @@ public class CWLib_Describe {
         set;
     }
 
+    public static CWLib_Describe describe(Schema.SObjectType token) {
+        return describe(String.valueOf(token));
+    }
+
     public static CWLib_Describe describe(String token) {
         CWLib_Describe instance = cache.get(token);
 
