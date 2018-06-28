@@ -1,9 +1,5 @@
 public class CWLib_Describe {
 
-    private static String myMethod() {
-        return CWLib_Utilities.getNamespaceClassPrefix();
-    }
-
     private static Map<String, CWLib_Describe> cache {
         get {
             if(cache == null) {
@@ -129,6 +125,13 @@ public class CWLib_Describe {
             }
 
             return result;
+        }
+    }
+
+    public class FilterableFields implements IFieldFilter {
+        public Boolean match(Schema.DescribeFieldResult fieldDescribe) {
+            Boolean result = false;
+            return fieldDescribe.isAccessible() && fieldDescribe.isFilterable();
         }
     }
 }

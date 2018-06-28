@@ -23,5 +23,4 @@ public class CWLib_Utilities {
         }
         return namespace + '.';
     }
-
 }
