@@ -67,6 +67,18 @@ public class CWLib_Describe {
         return describeResults[0];
     }
 
+    public String getNameField() {
+        if(token == Schema.CampaignMember.SObjectType) {
+            return Schema.CampaignMember.Name.getDescribe().getName();
+        }
+
+        for(Schema.DescribeFieldResult fieldDescribe : getFieldsByName().values()) {
+            if(fieldDescribe.isNameField()) return fieldDescribe.getName();
+        }
+
+        return null;
+    }
+
     public List<String> getFieldNames() {
         return new List<String>(getFieldMap().keySet());
     }
