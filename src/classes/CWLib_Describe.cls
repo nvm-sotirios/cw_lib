@@ -1,5 +1,9 @@
 public class CWLib_Describe {
 
+    private static String myMethod() {
+        return CWLib_Utilities.getNamespaceClassPrefix();
+    }
+
     private static Map<String, CWLib_Describe> cache {
         get {
             if(cache == null) {
