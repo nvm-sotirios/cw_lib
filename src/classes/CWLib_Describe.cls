@@ -87,8 +87,23 @@ public class CWLib_Describe {
         return describe.fields.getMap();
     }
 
+    public Map<String, Schema.DescribeFieldResult> getFieldsByName(Integer relationshipDepth) {
+        Map<String, Schema.DescribeFieldResult> result = new Map<String, Schema.DescribeFieldResult>();
+
+        while(relationshipDepth >= 0) {
+            result.putAll(getFieldsByName());
+            for(String fieldName : result.keySet()) {
+                if(result.get(fieldName).getType() == Schema.DisplayType.Reference) {
+                    result.putAll(getFieldsByName(--relationshipDepth));
+                }
+            }
+        }
+
+        return result;
+    }
+
     public Map<String, Schema.DescribeFieldResult> getFieldsByName() {
-        return getFieldsByName(null);
+        return getFieldsByName((IFieldFilter)null);
     }
 
     public Map<String, Schema.DescribeFieldResult> getFieldsByName(IFieldFilter filter) {
