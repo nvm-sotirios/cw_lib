@@ -1,9 +1,11 @@
 public class CWLib_Describe {
 
-    private static Map<String, CWLib_Describe> cache {
+    public static Integer count = 0;
+
+    public static Map<String, CWLib_Describe> cache {
         get {
             if(cache == null) {
-                return new Map<String, CWLib_Describe>();
+                cache = new Map<String, CWLib_Describe>();
             }
             return cache;
         }
@@ -15,6 +17,7 @@ public class CWLib_Describe {
         get {
             if(describe == null) {
                 describe = token.getDescribe();
+                count++;
             }
 
             return describe;
@@ -23,7 +26,13 @@ public class CWLib_Describe {
     }
 
     public static CWLib_Describe describe(Schema.SObjectType token) {
-        return describe(String.valueOf(token));
+        CWLib_Describe instance = cache.get(String.valueOf(token));
+
+        if(instance == null) {
+            instance = new CWLib_Describe(token);
+        }
+
+        return instance;
     }
 
     public static CWLib_Describe describe(String token) {
